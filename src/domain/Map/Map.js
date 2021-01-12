@@ -1,40 +1,65 @@
 import React, { useEffect, useState } from 'react';
 import './Map.scss'
-const Map = ({ mapRef, onPointerDown, onPointerUp, onPointerMove, setCountries }) => {
-    window.onmousewheel = (e) => {
-        e.preventDefault()
-        let subratio = viewBox.width / mapRef.current.getBoundingClientRect().width
-        if (subratio >= 1) subratio = 1
-        // e.preventDefault();
-        var w = viewBox.width;
-        var h = viewBox.height;
-        var mx = e.offsetX;
-        var my = e.offsetY;
-        var dh = h * Math.sign(e.deltaY) * 0.05 * subratio;
-        var dw = w * Math.sign(e.deltaY) * 0.05 * subratio;
-        var dx = dw * mx / h;
-        var dy = dh * my / w;
-        console.log(dx, dy);
-        viewBox = { x: viewBox.x - dx / 2, y: viewBox.y - dy / 2, width: viewBox.width + dw, height: viewBox.height + dh };
-        mapRef.current.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-    }
-    var viewBox = {
-        x: 0,
-        y: 0,
-        width: 1009,
-        height: 665
-    };
-    const [ratio, setRatio] = useState()
+const Map = ({ mapRef, wrapperRef, setCountries }) => {
+
     useEffect(() => {
-        const paths = mapRef.current.querySelectorAll('path')
-        paths.forEach(path => {
-            console.log(path.getAttribute("title"));
-        })
-        setRatio(viewBox.width / mapRef.current.getBoundingClientRect().width)
-        window.addEventListener('resize', function () {
-            setRatio(viewBox.width / mapRef.current.getBoundingClientRect().width)
-        });
-    }, [])
+        const svgImage = mapRef.current;
+        const svgContainer = wrapperRef.current;
+
+        var viewBox = { x: 0, y: 0, w: svgImage.clientWidth, h: svgImage.clientHeight };
+        svgImage.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+        const svgSize = { w: svgImage.clientWidth, h: svgImage.clientHeight };
+        var isPanning = false;
+        var startPoint = { x: 0, y: 0 };
+        var endPoint = { x: 0, y: 0 };;
+        var scale = 1;
+
+        svgContainer.onmousewheel = function (e) {
+            e.preventDefault();
+            var w = viewBox.w;
+            var h = viewBox.h;
+            var mx = e.offsetX;//mouse x  
+            var my = e.offsetY;
+            var dw = w * Math.sign(e.deltaY) * 0.05;
+            var dh = h * Math.sign(e.deltaY) * 0.05;
+            var dx = dw * mx / svgSize.w;
+            var dy = dh * my / svgSize.h;
+            viewBox = { x: viewBox.x - dx, y: viewBox.y - dy, w: viewBox.w + dw, h: viewBox.h + dh };
+            scale = svgSize.w / viewBox.w;
+            svgImage.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+        }
+
+
+        svgContainer.onmousedown = function (e) {
+            isPanning = true;
+            startPoint = { x: e.x, y: e.y };
+        }
+
+        svgContainer.onmousemove = function (e) {
+            if (isPanning) {
+                endPoint = { x: e.x, y: e.y };
+                var dx = (startPoint.x - endPoint.x) / scale;
+                var dy = (startPoint.y - endPoint.y) / scale;
+                var movedViewBox = { x: viewBox.x + dx, y: viewBox.y + dy, w: viewBox.w, h: viewBox.h };
+                svgImage.setAttribute('viewBox', `${movedViewBox.x} ${movedViewBox.y} ${movedViewBox.w} ${movedViewBox.h}`);
+            }
+        }
+
+        svgContainer.onmouseup = function (e) {
+            if (isPanning) {
+                endPoint = { x: e.x, y: e.y };
+                var dx = (startPoint.x - endPoint.x) / scale;
+                var dy = (startPoint.y - endPoint.y) / scale;
+                viewBox = { x: viewBox.x + dx, y: viewBox.y + dy, w: viewBox.w, h: viewBox.h };
+                svgImage.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+                isPanning = false;
+            }
+        }
+
+        svgContainer.onmouseleave = function (e) {
+            isPanning = false;
+        }
+    })
     return (
         <svg
             xmlnsmapsvg="http://mapsvg.com"
@@ -46,19 +71,6 @@ const Map = ({ mapRef, onPointerDown, onPointerUp, onPointerMove, setCountries }
             width="1009.6727"
             height="665.96301"
             ref={mapRef}
-            onPointerDown={onPointerDown}
-            onPointerUp={() => onPointerUp(viewBox)}
-            onPointerLeave={() => onPointerUp(viewBox)}
-            onPointerMove={(e) => onPointerMove(e, mapRef, ratio, viewBox)}
-
-            onMouseDown={onPointerDown}
-            onMouseUp={() => onPointerUp(viewBox)}
-            onMouseLeave={() => onPointerUp(viewBox)}
-            onMouseMove={(e) => onPointerMove(e, mapRef, ratio, viewBox)}
-
-            onTouchStart={onPointerDown}
-            onTouchEnd={() => onPointerUp(viewBox)}
-            onTouchMove={(e) => onPointerMove(e, mapRef, ratio, viewBox)}
         >
 
             <path
