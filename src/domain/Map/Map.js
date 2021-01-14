@@ -16,7 +16,7 @@ const Map = React.memo(({ mapRef, wrapperRef, setCountries }) => {
             e.preventDefault();
             var w = viewBox.w;
             var h = viewBox.h;
-            var mx = e.pageX;//mouse x  
+            var mx = e.pageX;
             var my = e.pageY;
             var dw = w * Math.sign(e.deltaY) * 0.05;
             var dh = h * Math.sign(e.deltaY) * 0.05;

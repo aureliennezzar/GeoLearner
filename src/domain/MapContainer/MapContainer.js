@@ -65,8 +65,7 @@ const MapContainer = () => {
         startGame(countries)
     }
     const startGame = (arr) => {
-        // let country = arr[Math.floor(Math.random() * arr.length)]
-        let country = arr[1]
+        let country = arr[Math.floor(Math.random() * arr.length)]
         document.body.dataset.goodWord = country
         setGoodCountry(country);
         alert(`Veuillez trouver : ${country} ! Bonne chance ;)`)
