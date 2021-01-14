@@ -3,7 +3,7 @@ path{
     stroke: black;
     stroke-width: 0.1px;
     &:hover{
-        fill: red;
+        fill: red !important;
     }
 }
 svg {
@@ -12,4 +12,5 @@ svg {
   left:0;
   height:100%;
   width:100%;
+  z-index: 0;
 }

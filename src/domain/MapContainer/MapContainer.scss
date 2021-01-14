@@ -1,4 +1,12 @@
-.map-wrapper{
+.map-wrapper {
     width: 100%;
     min-height: 100vh;
+}
+.actions {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    top: 0;
+    left: 0;
+    z-index: 10;
 }

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './Map.scss'
-const Map = ({ mapRef, wrapperRef, setCountries }) => {
-
+const Map = React.memo(({ mapRef, wrapperRef, setCountries }) => {
     useEffect(() => {
         const svgImage = mapRef.current;
         const svgContainer = wrapperRef.current;
-
         var viewBox = { x: 0, y: 0, w: svgImage.clientWidth, h: svgImage.clientHeight };
         svgImage.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
         const svgSize = { w: svgImage.clientWidth, h: svgImage.clientHeight };
@@ -14,12 +12,12 @@ const Map = ({ mapRef, wrapperRef, setCountries }) => {
         var endPoint = { x: 0, y: 0 };;
         var scale = 1;
 
-        svgContainer.onmousewheel = function (e) {
+        svgContainer.onwheel = function (e) {
             e.preventDefault();
             var w = viewBox.w;
             var h = viewBox.h;
-            var mx = e.offsetX;//mouse x  
-            var my = e.offsetY;
+            var mx = e.pageX;//mouse x  
+            var my = e.pageY;
             var dw = w * Math.sign(e.deltaY) * 0.05;
             var dh = h * Math.sign(e.deltaY) * 0.05;
             var dx = dw * mx / svgSize.w;
@@ -28,7 +26,6 @@ const Map = ({ mapRef, wrapperRef, setCountries }) => {
             scale = svgSize.w / viewBox.w;
             svgImage.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
         }
-
 
         svgContainer.onmousedown = function (e) {
             isPanning = true;
@@ -1100,6 +1097,6 @@ const Map = ({ mapRef, wrapperRef, setCountries }) => {
         </svg>
 
     );
-}
+})
 
 export default Map;
