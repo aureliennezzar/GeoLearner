@@ -4,7 +4,7 @@ const Map = React.memo(({ mapRef, wrapperRef, setCountries }) => {
     useEffect(() => {
         const svgImage = mapRef.current;
         const svgContainer = wrapperRef.current;
-        var viewBox = { x: 0, y: 0, w: svgImage.clientWidth, h: svgImage.clientHeight };
+        var viewBox = { x: -svgImage.clientWidth / 4.25, y: -svgImage.clientHeight / 8.5, w: svgImage.clientWidth, h: svgImage.clientHeight };
         svgImage.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
         const svgSize = { w: svgImage.clientWidth, h: svgImage.clientHeight };
         var isPanning = false;
