@@ -36,7 +36,7 @@ const MapContainer = () => {
             setAlive(false)
             document.body.dataset.alive = false
         } else {
-            e.target.style.fill = "#C3C3C3"
+            e.target.style.fill = "#8F282A"
             e.target.dataset.disabled = true
             setLife((prev) => prev - 1)
 
@@ -73,7 +73,7 @@ const MapContainer = () => {
     return (
         <>
             <div className="actions">
-                <h1>{life}</h1>
+                <h2 className="lifes">{"♥ ".repeat(life)}</h2>
                 {!alive && <button onClick={resetGame}>RECOMMENCER</button>}
             </div>
             <section className="map-wrapper" ref={wrapperRef}>
