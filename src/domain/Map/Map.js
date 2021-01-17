@@ -8,6 +8,7 @@ const Map = React.memo(({ mapRef, wrapperRef, setCountries }) => {
         svgImage.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
         const svgSize = { w: svgImage.clientWidth, h: svgImage.clientHeight };
         var isPanning = false;
+        var isClicking = false;
         var startPoint = { x: 0, y: 0 };
         var endPoint = { x: 0, y: 0 };;
         var scale = 1;
@@ -28,11 +29,15 @@ const Map = React.memo(({ mapRef, wrapperRef, setCountries }) => {
         }
 
         svgContainer.onmousedown = function (e) {
-            isPanning = true;
+            isClicking = true
             startPoint = { x: e.x, y: e.y };
         }
 
         svgContainer.onmousemove = function (e) {
+            if (isClicking) {
+                document.body.dataset.panning = "true"
+                isPanning = true; isClicking = false
+            }
             if (isPanning) {
                 endPoint = { x: e.x, y: e.y };
                 var dx = (startPoint.x - endPoint.x) / scale;
@@ -43,6 +48,7 @@ const Map = React.memo(({ mapRef, wrapperRef, setCountries }) => {
         }
 
         svgContainer.onmouseup = function (e) {
+            isClicking = false
             if (isPanning) {
                 endPoint = { x: e.x, y: e.y };
                 var dx = (startPoint.x - endPoint.x) / scale;
@@ -50,6 +56,9 @@ const Map = React.memo(({ mapRef, wrapperRef, setCountries }) => {
                 viewBox = { x: viewBox.x + dx, y: viewBox.y + dy, w: viewBox.w, h: viewBox.h };
                 svgImage.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
                 isPanning = false;
+                setTimeout(() => {
+                    document.body.dataset.panning = "false"
+                }, 100)
             }
         }
 

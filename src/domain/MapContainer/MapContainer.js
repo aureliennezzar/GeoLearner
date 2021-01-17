@@ -14,6 +14,7 @@ const MapContainer = () => {
     }, [life])
     useEffect(() => {
         document.body.dataset.alive = true
+        document.body.dataset.panning = false
         const paths = mapRef.current.querySelectorAll('path')
         const newCountries = []
         paths.forEach(country => {
@@ -29,7 +30,9 @@ const MapContainer = () => {
         }
     }, [])
     const handlePathClick = (e) => {
-        if (e.target.dataset.disabled === "true" || document.body.dataset.alive === "false") return
+        if (e.target.dataset.disabled === "true" ||
+            document.body.dataset.alive === "false" ||
+            document.body.dataset.panning === "true") return
 
         if (e.target.getAttribute('title') === document.body.dataset.goodWord) {
             alert('Bien joué !')
